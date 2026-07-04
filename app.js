@@ -175,11 +175,11 @@
     const updated = data.updatedAt || data.sourceUpdated || "Unknown";
     const sourceName = data.sourceName || data.source || activeLibrarySource;
     els.librarySourceLabel.textContent = activeLibrarySource;
-    els.libraryMetaLabel.textContent = `${version} · ${updated}`;
-    els.contentVersion.textContent = version;
-    els.contentUpdated.textContent = updated;
-    els.contentResourceCount.textContent = String(data.resources.length);
-    els.contentSource.textContent = sourceName;
+    els.libraryMetaLabel.textContent = `${version} / ${updated}`;
+    setText(els.contentVersion, version);
+    setText(els.contentUpdated, updated);
+    setText(els.contentResourceCount, String(data.resources.length));
+    setText(els.contentSource, sourceName);
   }
 
   function renderHelper() {
@@ -512,9 +512,11 @@
 
   function renderRecent() {
     if (!state.recent.length) {
-      els.recentList.innerHTML = `<p class="muted">No recently opened resources yet.</p>`;
+      els.recentList.hidden = true;
+      els.recentList.innerHTML = "";
       return;
     }
+    els.recentList.hidden = false;
     els.recentList.innerHTML = state.recent.slice(0, 8).map((entry) => {
       const resource = byId.get(entry.id);
       if (!resource) return "";
@@ -717,7 +719,7 @@
   }
 
   function setGitHubCacheStatus(message) {
-    els.githubCacheStatus.textContent = message;
+    setText(els.githubCacheStatus, message);
   }
 
   function applyLibrary(nextLibrary, sourceLabel) {
@@ -970,6 +972,10 @@
 
   function cleanString(value) {
     return String(value ?? "").trim();
+  }
+
+  function setText(element, message) {
+    if (element) element.textContent = message;
   }
 
   function normalizeUrl(value) {

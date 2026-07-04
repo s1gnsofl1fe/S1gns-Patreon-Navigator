@@ -66,7 +66,7 @@ This package also includes a `local_cache/` folder seeded from GitHub when the p
 
 If GitHub is available, the guide loads the latest library and saves a browser-local cache. If GitHub is unavailable later, the guide falls back to that browser cache. If this is your first time opening the guide and GitHub is unavailable, it falls back to the packaged `local_cache/` data.
 
-The `Guide Updates / Library Status` section shows status only. You do not need to import, export, refresh, or reset library JSON inside the website.
+The bottom footer shows short update and offline status text. You do not need to import, export, refresh, or reset library JSON inside the website.
 
 ## Troubleshooting
 

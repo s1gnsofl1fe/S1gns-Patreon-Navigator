@@ -151,69 +151,56 @@
       </div>
 
       <section class="tracking" aria-labelledby="trackingTitle">
-        <div>
-          <p class="eyebrow">Personal tracking</p>
-          <h2 id="trackingTitle">Exports and recently opened</h2>
+        <div class="tracking__header">
+          <div>
+            <p class="eyebrow">Personal tracking</p>
+            <h2 id="trackingTitle">My Progress</h2>
+          </div>
+          <p class="muted">Favorites, completed items, notes, and recents stay in this browser.</p>
         </div>
-        <div class="export-row">
-          <input id="progressImportInput" type="file" accept="application/json,.json" hidden>
-          <button id="exportProgress" type="button" class="button">Export progress JSON</button>
-          <button id="importProgress" type="button" class="button button--secondary">Import progress JSON</button>
-          <button id="exportFavorites" type="button" class="button button--secondary">Export favorites markdown</button>
-          <button id="exportCompleted" type="button" class="button button--secondary">Export completed markdown</button>
-          <button id="clearTracking" type="button" class="button button--secondary">Clear saved tracking</button>
-        </div>
-        <p id="exportStatus" class="export-status" aria-live="polite"></p>
         <div id="recentList" class="recent-list"></div>
-      </section>
 
-      <section class="content-manager" aria-labelledby="contentManagerTitle">
-        <details id="contentManagerDetails">
+        <details id="progressBackupDetails" class="progress-tools">
           <summary>
             <span>
-              <span class="eyebrow">Guide Updates</span>
-              <strong id="contentManagerTitle">Library Status</strong>
+              <span class="eyebrow">Backup</span>
+              <strong>Backup or move progress</strong>
             </span>
-            <span class="summary-hint">Latest guide and offline availability</span>
+            <span class="summary-hint">Export or restore your saved progress</span>
           </summary>
 
-          <div class="content-manager__grid">
-            <div class="content-manager__status">
-              <div>
-                <span class="dashboard-card__label">Current library version</span>
-                <strong id="contentVersion">Built-in</strong>
-              </div>
-              <div>
-                <span class="dashboard-card__label">Updated</span>
-                <strong id="contentUpdated">Unknown</strong>
-              </div>
-              <div>
-                <span class="dashboard-card__label">Resources</span>
-                <strong id="contentResourceCount">0</strong>
-              </div>
-              <div>
-                <span class="dashboard-card__label">Active source</span>
-                <strong id="contentSource">Built-in Library</strong>
-              </div>
-              <div>
-                <span class="dashboard-card__label">Offline copy</span>
-                <strong id="githubCacheStatus">Not checked yet</strong>
-              </div>
-              <div>
-                <span class="dashboard-card__label">App availability</span>
-                <strong id="appAvailabilityStatus">Hosted app enables install</strong>
-              </div>
-            </div>
-
-            <p class="muted">Guide updates happen automatically from the public update feed, browser-saved data, packaged offline data, or built-in data.</p>
+          <input id="progressImportInput" type="file" accept="application/json,.json" hidden>
+          <div class="export-row">
+            <button id="exportProgress" type="button" class="button">Export progress JSON</button>
+            <button id="importProgress" type="button" class="button button--secondary">Import progress JSON</button>
           </div>
-          <p id="importStatus" class="export-status" aria-live="polite"></p>
+
+          <details id="advancedProgressDetails" class="advanced-tools">
+            <summary>
+              <span>Advanced exports and reset</span>
+              <span class="summary-hint">Markdown lists and clear progress</span>
+            </summary>
+            <div class="export-row">
+              <button id="exportFavorites" type="button" class="button button--secondary">Export favorites markdown</button>
+              <button id="exportCompleted" type="button" class="button button--secondary">Export completed markdown</button>
+              <button id="clearTracking" type="button" class="button button--danger">Clear saved tracking</button>
+            </div>
+          </details>
+
+          <p id="exportStatus" class="export-status" aria-live="polite"></p>
         </details>
       </section>
 
       <footer class="footer-brand">
-        <img src="assets/S1gns_of_L1fe_PURPLE_LOGO.png" alt="">
-        <span>S1gns Of L1fe Patreon Navigator</span>
+        <div class="footer-brand__lockup">
+          <img src="assets/S1gns_of_L1fe_PURPLE_LOGO.png" alt="">
+          <span>S1gns Of L1fe Patreon Navigator</span>
+        </div>
+        <div class="footer-status" aria-live="polite">
+          <span id="footerGuideStatus"><span id="importStatus">Checking guide updates...</span></span>
+          <span id="appAvailabilityStatus">Hosted app enables install</span>
+          <span id="githubCacheStatus" hidden>Not checked yet</span>
+        </div>
       </footer>
     </main>
 
