@@ -1,5 +1,5 @@
-const shellCacheName = "s1gns-navigator-shell-v1";
-const contentCacheName = "s1gns-navigator-content-v1";
+const shellCacheName = "s1gns-navigator-shell-v2";
+const contentCacheName = "s1gns-navigator-content-v2";
 const githubLibraryUrl = "https://raw.githubusercontent.com/s1gnsofl1fe/S1gns-Patreon-Guide/main/library-content.json";
 const appShellAssets = [
   ".",
@@ -49,21 +49,9 @@ self.addEventListener("fetch", (event) => {
   }
 
   if (url.origin === self.location.origin) {
-    event.respondWith(cacheFirst(request));
+    event.respondWith(networkFirst(request, "", shellCacheName));
   }
 });
-
-async function cacheFirst(request) {
-  const cached = await caches.match(request);
-  if (cached) return cached;
-
-  const response = await fetch(request);
-  if (response.ok) {
-    const cache = await caches.open(shellCacheName);
-    await cache.put(request, response.clone());
-  }
-  return response;
-}
 
 async function cacheShellAssets() {
   const cache = await caches.open(shellCacheName);
@@ -77,14 +65,14 @@ async function cacheShellAssets() {
   }));
 }
 
-async function networkFirst(request, fallbackUrl = "") {
-  const cache = await caches.open(contentCacheName);
+async function networkFirst(request, fallbackUrl = "", cacheName = contentCacheName) {
+  const cache = await caches.open(cacheName);
   try {
     const response = await fetch(request);
     if (response.ok) await cache.put(request, response.clone());
     return response;
   } catch (error) {
-    const cached = await cache.match(request);
+    const cached = await cache.match(request, { ignoreSearch: true });
     if (cached) return cached;
     if (fallbackUrl) {
       const shellCache = await caches.open(shellCacheName);
