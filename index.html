@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#07090f">
+    <title>S1gns Patreon Navigator</title>
+    <link rel="icon" type="image/png" href="assets/S1gns_of_L1fe_PURPLE_LOGO.png">
+    <link rel="manifest" href="manifest.webmanifest?v=1">
+    <link rel="stylesheet" href="styles.css?v=7">
+  </head>
+  <body>
+    <header class="hero">
+      <div class="hero__inner">
+        <div class="brand-lockup">
+          <div class="brand-logo-wrap">
+            <img class="brand-logo" src="assets/S1gns_of_L1fe_PURPLE_LOGO.png" alt="S1gns Of L1fe">
+          </div>
+          <div>
+            <p class="eyebrow">S1gns Of L1fe</p>
+            <h1>S1gns Patreon Navigator</h1>
+            <p class="subtitle">Search, browse, and follow guided pathways through the S1gns Patreon library.</p>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="shell">
+      <section class="dashboard" aria-label="Library dashboard">
+        <article class="dashboard-card">
+          <span class="dashboard-card__label">Total resources</span>
+          <strong id="resourceCount">0</strong>
+        </article>
+        <article class="dashboard-card">
+          <span class="dashboard-card__label">Favorites</span>
+          <strong id="favoriteCount">0</strong>
+        </article>
+        <article class="dashboard-card">
+          <span class="dashboard-card__label">Completed</span>
+          <strong id="completedCount">0</strong>
+        </article>
+        <article class="dashboard-card">
+          <span class="dashboard-card__label">Pathways started</span>
+          <strong id="pathwaysStartedCount">0</strong>
+        </article>
+        <article class="dashboard-card">
+          <span class="dashboard-card__label">Recently opened</span>
+          <strong id="recentCount">0</strong>
+        </article>
+        <article class="dashboard-card dashboard-card--wide">
+          <span class="dashboard-card__label">Active content source</span>
+          <strong id="librarySourceLabel">Built-in Library</strong>
+          <small id="libraryMetaLabel">Version 1</small>
+        </article>
+      </section>
+
+      <section class="search-panel" aria-label="Search and filters">
+        <div class="control-heading">
+          <div>
+            <p class="eyebrow">Control surface</p>
+            <h2>Find the next useful thing</h2>
+          </div>
+          <button id="clearFilters" type="button" class="button button--secondary">Clear filters</button>
+        </div>
+        <label class="search-label" for="searchInput">Search the library</label>
+        <div class="search-row">
+          <input id="searchInput" type="search" autocomplete="off" placeholder="Search titles, pathways, tags, tools, topics...">
+        </div>
+
+        <div class="filters" id="filters">
+          <label>
+            <span>Section</span>
+            <select id="sectionFilter"></select>
+          </label>
+          <label>
+            <span>Content type</span>
+            <select id="typeFilter"></select>
+          </label>
+          <label>
+            <span>Pathway</span>
+            <select id="pathwayFilter"></select>
+          </label>
+          <label>
+            <span>Skill level</span>
+            <select id="levelFilter"></select>
+          </label>
+          <label>
+            <span>Plugin / tool</span>
+            <select id="toolFilter"></select>
+          </label>
+          <label>
+            <span>Topic tag</span>
+            <select id="tagFilter"></select>
+          </label>
+        </div>
+      </section>
+
+      <section class="helper" aria-labelledby="helperTitle">
+        <div class="helper__intro">
+          <p class="eyebrow">Where should I start?</p>
+          <h2 id="helperTitle">Choose an intention</h2>
+        </div>
+        <div class="helper__buttons" id="helperButtons"></div>
+        <div id="recommendation" class="recommendation-card" aria-live="polite">
+          <p class="muted">Pick an intention to surface a pathway or section with a few suggested first stops.</p>
+        </div>
+      </section>
+
+      <section class="pathways" aria-labelledby="pathwaysTitle">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Guided playlists</p>
+            <h2 id="pathwaysTitle">Pathways</h2>
+          </div>
+          <p>Each card filters the library and opens its resource list.</p>
+        </div>
+        <div id="pathwayCards" class="pathway-grid"></div>
+      </section>
+
+      <div class="content-grid">
+        <section class="results" aria-labelledby="resultsTitle">
+          <div class="section-heading section-heading--compact">
+            <div>
+              <p class="eyebrow">Browse</p>
+              <h2 id="resultsTitle">Resources</h2>
+            </div>
+            <span id="resultsCount" class="count-pill">0 shown</span>
+          </div>
+          <div id="activeChips" class="chips" aria-live="polite"></div>
+          <div class="category-browser" aria-label="Browse resources by category">
+            <div class="category-browser__heading">
+              <div>
+                <p class="eyebrow">Browse by category</p>
+                <h3>Library sections</h3>
+              </div>
+              <p id="tabSummary" class="tab-summary">Showing resources</p>
+            </div>
+            <div id="categoryTabs" class="category-tabs" role="tablist" aria-label="Resource sections"></div>
+          </div>
+          <div id="resourceList" class="resource-list"></div>
+          <div id="resourcePaging" class="resource-paging" aria-live="polite"></div>
+        </section>
+
+        <aside class="detail" aria-labelledby="detailTitle">
+          <div id="detailPanel" class="detail__panel">
+            <p class="eyebrow">Resource detail</p>
+            <h2 id="detailTitle">Select a resource</h2>
+            <p class="muted">Open any card to save notes, favorite it, mark it complete, or revisit the original link.</p>
+          </div>
+        </aside>
+      </div>
+
+      <section class="tracking" aria-labelledby="trackingTitle">
+        <div>
+          <p class="eyebrow">Personal tracking</p>
+          <h2 id="trackingTitle">Exports and recently opened</h2>
+        </div>
+        <div class="export-row">
+          <input id="progressImportInput" type="file" accept="application/json,.json" hidden>
+          <button id="exportProgress" type="button" class="button">Export progress JSON</button>
+          <button id="importProgress" type="button" class="button button--secondary">Import progress JSON</button>
+          <button id="exportFavorites" type="button" class="button button--secondary">Export favorites markdown</button>
+          <button id="exportCompleted" type="button" class="button button--secondary">Export completed markdown</button>
+          <button id="clearTracking" type="button" class="button button--secondary">Clear saved tracking</button>
+        </div>
+        <p id="exportStatus" class="export-status" aria-live="polite"></p>
+        <div id="recentList" class="recent-list"></div>
+      </section>
+
+      <section class="content-manager" aria-labelledby="contentManagerTitle">
+        <details id="contentManagerDetails">
+          <summary>
+            <span>
+              <span class="eyebrow">Guide Updates</span>
+              <strong id="contentManagerTitle">Library Status</strong>
+            </span>
+            <span class="summary-hint">Latest guide and offline availability</span>
+          </summary>
+
+          <div class="content-manager__grid">
+            <div class="content-manager__status">
+              <div>
+                <span class="dashboard-card__label">Current library version</span>
+                <strong id="contentVersion">Built-in</strong>
+              </div>
+              <div>
+                <span class="dashboard-card__label">Updated</span>
+                <strong id="contentUpdated">Unknown</strong>
+              </div>
+              <div>
+                <span class="dashboard-card__label">Resources</span>
+                <strong id="contentResourceCount">0</strong>
+              </div>
+              <div>
+                <span class="dashboard-card__label">Active source</span>
+                <strong id="contentSource">Built-in Library</strong>
+              </div>
+              <div>
+                <span class="dashboard-card__label">Offline copy</span>
+                <strong id="githubCacheStatus">Not checked yet</strong>
+              </div>
+              <div>
+                <span class="dashboard-card__label">App availability</span>
+                <strong id="appAvailabilityStatus">Hosted app enables install</strong>
+              </div>
+            </div>
+
+            <p class="muted">Guide updates happen automatically from the public update feed, browser-saved data, packaged offline data, or built-in data.</p>
+          </div>
+          <p id="importStatus" class="export-status" aria-live="polite"></p>
+        </details>
+      </section>
+
+      <footer class="footer-brand">
+        <img src="assets/S1gns_of_L1fe_PURPLE_LOGO.png" alt="">
+        <span>S1gns Of L1fe Patreon Navigator</span>
+      </footer>
+    </main>
+
+    <script src="data.js?v=7"></script>
+    <script src="progress-import.js?v=1"></script>
+    <script src="local_cache/library-content-cache.js?v=1"></script>
+    <script src="library-content-validator.js?v=1"></script>
+    <script src="pwa-register.js?v=1"></script>
+    <script src="app.js?v=7"></script>
+  </body>
+</html>
