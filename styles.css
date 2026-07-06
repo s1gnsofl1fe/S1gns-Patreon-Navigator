@@ -826,6 +826,11 @@ textarea:focus-visible {
   padding: 22px;
 }
 
+.detail__panel:focus-visible {
+  outline: 3px solid rgba(125, 211, 252, 0.7);
+  outline-offset: 4px;
+}
+
 .detail__panel a {
   color: inherit;
 }
@@ -1036,7 +1041,6 @@ textarea:focus-visible {
     font-size: 2.55rem;
   }
 
-  .dashboard,
   .search-row,
   .filters,
   .helper,
@@ -1047,7 +1051,27 @@ textarea:focus-visible {
   }
 
   .dashboard {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
     margin-top: -66px;
+  }
+
+  .dashboard-card {
+    min-height: 88px;
+    padding: 14px;
+  }
+
+  .dashboard-card strong {
+    font-size: 1.65rem;
+  }
+
+  .dashboard-card--wide {
+    grid-column: 1 / -1;
+  }
+
+  .dashboard-card--wide strong {
+    font-size: 0.98rem;
+    overflow-wrap: anywhere;
   }
 
   .brand-lockup {

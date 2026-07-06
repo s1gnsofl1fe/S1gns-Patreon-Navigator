@@ -55,14 +55,17 @@
 
   let byId = new Map(data.resources.map((resource) => [resource.id, resource]));
   const pageSize = 24;
+  const recentlyAddedTab = "Recently Added";
   let openPathway = data.pathways[0]?.id || "";
   let selectedId = data.pathways[0]?.resourceIds[0] || data.resources[0]?.id || "";
   let state = loadState();
   let activeRecommendation = null;
   let activeTab = "All";
   let visibleLimit = pageSize;
+  let recentlyAddedIds = buildRecentlyAddedIds(data);
 
   const helperOptions = [
+    { label: "Show me what's new", title: "Recently added", tab: recentlyAddedTab, reason: "Starts with the posts added in the July 2026 refresh, including the newest walkthroughs, livestreams, presets, and blog posts.", recent: true },
     { label: "I’m new here", pathwayTitle: "Beginner Pathway", tab: "Pathways", reason: "A clear first pass through foundational ambient production, beginner concepts, and core S1gns teaching material." },
     { label: "I want to improve sound design", pathwayTitle: "Sound Design Pathway", tab: "Pathways", reason: "Best for patch building, synthesis, textures, wavetables, pads, plucks, and motion." },
     { label: "I want better mixes", pathwayTitle: "Mixing Pathway", tab: "Pathways", reason: "Focuses the library around frequency, space, routing, mastering, and balanced ambient mixes." },
@@ -212,12 +215,22 @@
     const pathway = option.pathwayTitle ? data.pathways.find((p) => p.title === option.pathwayTitle) : null;
     const resources = pathway
       ? pathway.resourceIds.map((id) => byId.get(id)).filter(Boolean)
-      : getFilteredResources();
+      : option.recent
+        ? [...recentlyAddedIds].map((id) => byId.get(id)).filter(Boolean)
+        : getFilteredResources();
     return {
       title: option.pathwayTitle || option.title,
       reason: option.reason,
       resources: resources.slice(0, 3)
     };
+  }
+
+  function buildRecentlyAddedIds(library) {
+    const ids = Array.isArray(library.metadata?.recentlyAddedResourceIds)
+      ? library.metadata.recentlyAddedResourceIds.map(cleanString).filter(Boolean)
+      : [];
+    const validIds = new Set((library.resources || []).map((resource) => resource.id));
+    return new Set(ids.filter((id) => validIds.has(id)));
   }
 
   function renderRecommendation() {
@@ -329,21 +342,22 @@
   }
 
   function renderTabs(filteredResources) {
-    const counts = new Map(data.sections.map((section) => [section, 0]));
+    const browseSections = getBrowseSections();
+    const counts = new Map(browseSections.map((section) => [section, 0]));
     filteredResources.forEach((resource) => {
-      data.sections.forEach((section) => {
+      browseSections.forEach((section) => {
         if (resourceBelongsToSection(resource, section)) {
           counts.set(section, counts.get(section) + 1);
         }
       });
     });
 
-    const tabs = [{ section: "All", count: filteredResources.length }, ...data.sections.map((section) => ({
+    const tabs = [{ section: "All", count: filteredResources.length }, ...browseSections.map((section) => ({
       section,
       count: counts.get(section) || 0
     }))];
 
-    if (activeTab !== "All" && !data.sections.includes(activeTab)) {
+    if (activeTab !== "All" && !browseSections.includes(activeTab)) {
       activeTab = "All";
     }
 
@@ -374,11 +388,23 @@
   }
 
   function resourceBelongsToSection(resource, section) {
+    if (section === recentlyAddedTab) return recentlyAddedIds.has(resource.id);
     return resource.section === section || (resource.alsoInSections || []).includes(section);
+  }
+
+  function getBrowseSections() {
+    return recentlyAddedIds.size ? [recentlyAddedTab, ...data.sections] : data.sections;
+  }
+
+  function keepActiveTabUseful(filteredResources) {
+    if (activeTab === "All" || !filteredResources.length) return;
+    if (resourcesForActiveTab(filteredResources).length) return;
+    setActiveTab("All");
   }
 
   function renderResources() {
     const filteredResources = getFilteredResources();
+    keepActiveTabUseful(filteredResources);
     renderTabs(filteredResources);
     const resources = resourcesForActiveTab(filteredResources);
     const visibleResources = resources.slice(0, visibleLimit);
@@ -537,7 +563,13 @@
   function selectResource(id) {
     selectedId = id;
     renderDetail();
-    document.getElementById("detailTitle").scrollIntoView({ block: "nearest" });
+    els.detail.setAttribute("tabindex", "-1");
+    const targetTop = Math.max(0, els.detail.getBoundingClientRect().top + window.scrollY - 18);
+    const previousScrollBehavior = document.documentElement.style.scrollBehavior;
+    document.documentElement.style.scrollBehavior = "auto";
+    window.scrollTo(0, targetTop);
+    document.documentElement.style.scrollBehavior = previousScrollBehavior;
+    els.detail.focus({ preventScroll: true });
   }
 
   function toggleFavorite(id) {
@@ -726,6 +758,7 @@
     data = nextLibrary;
     activeLibrarySource = sourceLabel;
     byId = new Map(data.resources.map((resource) => [resource.id, resource]));
+    recentlyAddedIds = buildRecentlyAddedIds(data);
     openPathway = data.pathways[0]?.id || "";
     selectedId = data.pathways[0]?.resourceIds[0] || data.resources[0]?.id || "";
     activeRecommendation = null;
